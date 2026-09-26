@@ -132,6 +132,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
+    <Compile Include="Services\BchnExcelImporterTest.cs" />
+    <Compile Include="Services\PasswordHasherTest.cs" />
+    <Compile Include="Services\RiskAnalyticsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />

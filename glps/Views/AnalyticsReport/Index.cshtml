@@ -1,25 +1,85 @@
-﻿@model glps.Models.bchn_data
+﻿@model glps.Services.DashboardSummary
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
-<!DOCTYPE html>
+<p class="fw-bolder">Welcome to the GreenLine Passenger System dashboard.</p>
+<p>
+    GreenLine vets passenger information against the border control register and issues a threat risk
+    measurement as a percentage for each passenger, from 0% (no risk) to 100% (guaranteed risk).
+    Risks are shown by airport, terminal, flight and threat type (terrorism, narcotics, smuggling,
+    illegal immigration and revenue).
+</p>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-    <title>Index</title>
-</head>
-<body>
-    <p class="fw-bolder">Welcome to Greenline Passanger System Dashboard.</p>
-    <p>
-        GreenLine vet the information against the border control register and issue a
-        threat risk measurement as a percentage for each cargo/passenger/crew member with 0% meaning
-        no risk through to 100% which is a guaranteed risk.
-    </p>
-    <p>Risks are presented by airport, terminal, flights, passengers as well as by risk types.</p>
-    <p>The risk assessment metric has rules associated with terrorism, narcotics, smuggling, illegal immigration, and revenue related threats.</p></body>
-</html>
+<div class="row">
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-primary text-white mb-4">
+            <div class="card-body">
+                <div class="small">Passengers screened</div>
+                <div class="h3 mb-0">@Model.PassengersScreened</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-danger text-white mb-4">
+            <div class="card-body">
+                <div class="small">High-risk passengers (&ge; @glps.Services.RiskScore.HighRiskThreshold%)</div>
+                <div class="h3 mb-0">@Model.HighRiskPassengers</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-warning text-white mb-4">
+            <div class="card-body">
+                <div class="small">Average risk</div>
+                <div class="h3 mb-0">@Model.AverageRisk%</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card bg-success text-white mb-4">
+            <div class="card-body">
+                <div class="small">Flights / manifest entries</div>
+                <div class="h3 mb-0">@Model.Flights / @Model.ManifestEntries</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header"><i class="fas fa-exclamation-triangle mr-1"></i>Highest-risk passengers</div>
+    <div class="card-body">
+        @if (Model.TopRisks.Count == 0)
+        {
+            <p class="mb-0">No passengers with a risk score yet. @Html.ActionLink("Upload data", "UploadData", "Home")</p>
+        }
+        else
+        {
+            <table class="table table-sm table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Nationality</th>
+                        <th>Passport</th>
+                        <th class="text-right">Overall risk</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.TopRisks)
+                    {
+                        <tr>
+                            <td>@item.Passenger.Fore_Nane @item.Passenger.Family_Name</td>
+                            <td>@item.Passenger.Nationality</td>
+                            <td>@item.Passenger.Passport_number</td>
+                            <td class="text-right">@item.Risk%</td>
+                            <td>@Html.ActionLink("Details", "Details", "bchn_data", new { id = item.Passenger.Id }, null)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

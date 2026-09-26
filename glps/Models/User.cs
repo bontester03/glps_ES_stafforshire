@@ -1,11 +1,4 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace glps.Models
 {
@@ -14,25 +7,16 @@ namespace glps.Models
         [Key]
         public int ID { get; set; }
 
-        //public int RegistrationID AS('AS' + RIGHT(('000000000' + CAST(idfield AS varchar(9))), 9) + 'FAK'){ get; set; }
-
-       
-
         [Display(Name = "Email ID")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Email ID is required")]
-        [DataType(System.ComponentModel.DataAnnotations.DataType.EmailAddress)]
-        [Remote("IsAlreadySigned", "User", HttpMethod = "POST", ErrorMessage = "EmailId already exists in database.")]
-
+        [DataType(DataType.EmailAddress)]
         public string EmailID { get; set; }
 
-      
-        
-
-        [Display(Name = "Confirm Password")]
+        // Stores a PBKDF2 hash (see Infrastructure/PasswordHasher); legacy rows may still hold
+        // plaintext and are upgraded on the next successful login.
+        [Display(Name = "Password")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Password is required")]
-        [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
-        [System.ComponentModel.DataAnnotations.Compare("Password", ErrorMessage = "Passwoords do not match")]
-
+        [DataType(DataType.Password)]
         public string Password { get; set; }
     }
 }

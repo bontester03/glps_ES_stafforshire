@@ -20,17 +20,22 @@
                 @using (Html.BeginForm("UserLogin", "Home", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
+                    @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
+                    if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger" role="alert">@ViewBag.Error</div>
+                    }
                     <div class="form-floating mb-3">
                         @*@Html.LabelFor(m => m.EmailID, htmlAttributes: new { @class = "control-label col-md-2" })*@
                         <div>
-                            @Html.TextBoxFor(m => m.EmailID, "", new { @class = "form-control", @placeholder = "Email ID" })
+                            @Html.TextBoxFor(m => m.EmailID, new { @class = "form-control", @placeholder = "Email ID", type = "email", autocomplete = "username" })
                             @Html.ValidationMessageFor(model => model.EmailID, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="form-floating mb-3">
                         @*@Html.LabelFor(m => m.Password, htmlAttributes: new { @class = "control-label col-md-2" })*@
                         <div>
-                            @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @placeholder = "Password", type = "password" })
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Password", autocomplete = "current-password" })
                             @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -69,13 +74,3 @@
         <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
         <label for="floatingPassword">Password</label>
     </div>*@
-
-<script type="text/javascript">
-    $("#UserRegistration").click(function () {
-    $.get('@Url.Action("UserRegistration", "User")', {}, function (response) {
-        $("#Display").html(response);
-    });
-});
-</script>
-
-

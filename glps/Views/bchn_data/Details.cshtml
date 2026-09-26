@@ -119,21 +119,15 @@
 				title: {
 					text: "Risk Analysis Report"
 				},
+				axisY: { minimum: 0, maximum: 100, suffix: "%" },
 				subtitles: [
-					{ text: "Try Resizing the Browser" }
+					{ text: "Overall risk: @ViewBag.OverallRisk%" }
 				],
 				data: [
 				{
-					type: "pie", //change type to bar, line, area, pie, etc
-                        dataPoints: [
-                            { y: 5, label: "Terrorism" },
-                            { y: 10, label: "Narcotics" },
-                            { y: 10, label: "Smuggling" },
-                            { y: 20, label: "Illegal Immigration" },
-							{ y: 15, label: "Revenue" },
-                           ]
-                                        //Uncomment below line to add data coming from the controller.
-					//dataPoints: @Html.Raw(ViewBag.DataPoints),
+					type: "column",
+                    indexLabel: "{y}%",
+                    dataPoints: @Html.Raw(ViewBag.DataPoints)
 				}
 				]
 			});

@@ -15,6 +15,11 @@ namespace glps.Models
 			this.Y = y;
 		}
 
+		public DataPoint(string label, double y, int count) : this(label, y)
+		{
+			this.Count = count;
+		}
+
 		//Explicitly setting the name to be used while serializing to JSON.
 		[DataMember(Name = "label")]
 		public string Label = "";
@@ -22,6 +27,10 @@ namespace glps.Models
 		//Explicitly setting the name to be used while serializing to JSON.
 		[DataMember(Name = "y")]
 		public Nullable<double> Y = null;
+
+		//Number of passengers behind the value (shown in chart tooltips).
+		[DataMember(Name = "count", EmitDefaultValue = false)]
+		public Nullable<int> Count = null;
 
 	}
 }

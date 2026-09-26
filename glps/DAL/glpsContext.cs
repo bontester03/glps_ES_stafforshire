@@ -9,7 +9,7 @@ namespace glps.DAL
 {
     public class glpsContext : DbContext
     {
-        public glpsContext() : base("glps")
+        public glpsContext() : base("name=glpsConnectionString")
         {
         }
 
@@ -22,7 +22,5 @@ namespace glps.DAL
 
         public DbSet<User> users { get; set; }
 
-
-        //public DbSet<Point> Points { get; set; }
     }
 }

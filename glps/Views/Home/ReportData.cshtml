@@ -1,40 +1,11 @@
-﻿@model glps.Models.bchn_data
-
-@{
-    Layout = null;
+﻿@{
+    ViewBag.Title = "Report";
+    ViewBag.ChartTitle = "Risk Assessment by Threat Type";
+    ViewBag.ChartSubtitle = "Average score across all screened passengers";
+    ViewBag.AxisTitle = "Average risk";
+    ViewBag.ChartType = "column";
+    ViewBag.CountLabel = "high-risk passengers";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
-<!DOCTYPE HTML>
-<html>
-<head>
-    <script>
-window.onload = function () {
-
-var result = @Html.Raw(ViewBag.DataPoints);
-var dataPoints =[];
-for(var i = 0; i < result.length; i++){
-	dataPoints.push({x:result[i].x, y:result[i].y});
-}
-
-var chart = new CanvasJS.Chart("chartContainer", {
-    animationEnabled: true,
-    title: {
-        text: "ASP.NET MVC Column Chart from Database"
-    },
-    data: [
-    {
-        type: "column",
-        dataPoints: dataPoints,
-    }
-    ]
-});
-chart.render();
-
-};
-    </script>
-</head>
-<body>
-    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
-    <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-</body>
-</html>
+@Html.Partial("~/Views/AnalyticsReport/_RiskChart.cshtml")

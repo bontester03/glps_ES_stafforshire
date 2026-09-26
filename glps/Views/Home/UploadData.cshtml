@@ -1,30 +1,82 @@
-﻿@model IEnumerable<glps.Models.bchn_data>
-
-@{
-
+﻿@{
+    ViewBag.Title = "Upload Data";
     Layout = "~/Views/Shared/_Layout3.cshtml";
 }
-<h4>   Hello @Session["EmailID"] , Welcome to Admin Console From here you can Add Users via Excel</h4>
+<h4>Hello @Session["EmailID"], welcome to the Admin Console</h4>
+<p>Import passenger risk records (bchn_data) from an Excel workbook. There are currently <strong id="passengerCount">@ViewBag.PassengerCount</strong> records.</p>
 <hr />
-@using (Html.BeginForm("UploadExcel", "Home", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return myFunction()" }))
+
+<div id="uploadResult" role="status"></div>
+
+@using (Html.BeginForm("UploadExcel", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "uploadForm" }))
 {
-    <div class="form-horizontal">
-        <div class="form-group">
-            <div class="control-label col-md-2">Upload Format Supported:</div>
-            <div class="col-md-10">
-                <a href="/User/DownloadExcel/"><img src="~/excel.ico" width="25" height="25" title="Download Excel format" alt="Excel" /></a>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="control-label col-md-2">Excel:</div>
-            <div class="col-md-10">
-                <input type="file" id="FileUpload" name="FileUpload" class="" />
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Upload" id="btnSubmit" class="btn btn-primary" />
-            </div>
-        </div>
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label>Template:</label>
+        <a href="@Url.Action("DownloadTemplate", "Home")">Download the Excel template (.xlsx)</a>
+        <small class="form-text text-muted">
+            Columns: Fore_Name, Family_Name, Gender, DOB, Nationality, Passport_number, Terrorism, Narcotics,
+            Smuggling, Illegal_Immigration, Revenue. Fore_Name, Family_Name and Passport_number are required.
+            Risk columns accept a percentage (0-100), Yes/No, or Low/Medium/High.
+        </small>
     </div>
+    <div class="form-group">
+        <label for="FileUpload">Excel file (.xlsx):</label>
+        <input type="file" id="FileUpload" name="FileUpload" class="form-control-file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+    </div>
+    <div class="form-group">
+        <button type="submit" id="btnSubmit" class="btn btn-primary">Upload</button>
+    </div>
+}
+
+@section scripts {
+    <script>
+        $(function () {
+            var $result = $("#uploadResult");
+
+            function show(kind, title, items) {
+                var $box = $("<div/>").addClass("alert alert-" + kind).append($("<strong/>").text(title));
+                if (items && items.length) {
+                    var $list = $("<ul class='mb-0'/>");
+                    $.each(items, function (_, item) { $list.append($("<li/>").text(item)); });
+                    $box.append($list);
+                }
+                $result.empty().append($box);
+            }
+
+            $("#uploadForm").on("submit", function (e) {
+                e.preventDefault();
+                if (!$("#FileUpload").val()) {
+                    show("warning", "Please choose an Excel file.");
+                    return;
+                }
+
+                var $button = $("#btnSubmit").prop("disabled", true).text("Uploading...");
+                $.ajax({
+                    url: this.action,
+                    type: "POST",
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false
+                }).done(function (res) {
+                    if (res.success) {
+                        show("success", res.imported + " record(s) imported.");
+                        var $count = $("#passengerCount");
+                        $count.text(parseInt($count.text(), 10) + res.imported);
+                        $("#uploadForm")[0].reset();
+                    } else {
+                        show("danger", "Nothing was imported. Please fix the following and try again:", res.errors);
+                    }
+                }).fail(function (xhr) {
+                    if (xhr.status === 401) {
+                        window.location = "@Url.Action("UserLogin", "Home")";
+                        return;
+                    }
+                    show("danger", "Upload failed (" + xhr.status + "). Please try again.");
+                }).always(function () {
+                    $button.prop("disabled", false).text("Upload");
+                });
+            });
+        });
+    </script>
 }
