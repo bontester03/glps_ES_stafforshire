@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using System.Web.Mvc;
+using glps.Infrastructure;
 
 namespace glps
 {
@@ -8,6 +9,8 @@ namespace glps
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            // Every page requires login unless the action is marked [AllowAnonymous].
+            filters.Add(new SessionAuthorizeAttribute());
         }
     }
 }

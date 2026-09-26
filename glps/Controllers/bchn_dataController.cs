@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using glps.DAL;
 using glps.Models;
+using glps.Services;
 
 namespace glps.Controllers
 {
@@ -21,30 +22,6 @@ namespace glps.Controllers
             return View(db.bchn_Datas.ToList());
         }
 
-        //public ActionResult GetData()
-        //{
-        //    int terrorism = db.bchn_Datas.Where(x => x.Terrorism == "Terrorism").Count();
-        //    int narcotics = db.bchn_Datas.Where(x => x.Narcotics == "Narcotics").Count();
-        //    int smuggling = db.bchn_Datas.Where(x => x.Smuggling == "Smuggling").Count();
-        //    int illegal_Immigration = db.bchn_Datas.Where(x => x.Illegal_Immigration == "Illegal_Immigration").Count();
-        //    int revenue = db.bchn_Datas.Where(x => x.Revenue == "Revenue").Count();
-        //    Ratio obj = new Ratio();
-        //    obj.terrorism = terrorism;
-        //    obj.narcotics = narcotics;
-        //    obj.smuggling = smuggling;
-        //    obj.illegal_Immigration = illegal_Immigration;
-        //    obj.revenue = revenue;
-
-        //    return Json(obj, JsonRequestBehavior.AllowGet);
-        //}
-        //   public class Ratio
-        //{
-        //    public int terrorism { get; set; }
-        //    public int narcotics { get; set; }
-        //    public int smuggling { get; set; }
-        //    public int illegal_Immigration { get; set; }
-        //    public int revenue { get; set; }
-        //}
         // GET: bchn_data/Details/5
         public ActionResult Details(int? id)
         {
@@ -57,6 +34,11 @@ namespace glps.Controllers
             {
                 return HttpNotFound();
             }
+
+            var scores = RiskScore.ForPassenger(bchn_data);
+            var dataPoints = RiskScore.Categories.Select((c, i) => new DataPoint(c, scores[i])).ToList();
+            ViewBag.OverallRisk = RiskScore.Overall(bchn_data);
+            ViewBag.DataPoints = ChartJson.Serialize(dataPoints);
             return View(bchn_data);
         }
 

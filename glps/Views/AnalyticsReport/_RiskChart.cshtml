@@ -1,0 +1,35 @@
+@* Shared chart for the analytics pages. Expects ViewBag.DataPoints (JSON), ViewBag.HasData,
+   ViewBag.ChartTitle, ViewBag.ChartSubtitle, ViewBag.AxisTitle and optionally ViewBag.ChartType and ViewBag.CountLabel. *@
+@if (ViewBag.HasData == true)
+{
+    <div id="chartContainer" style="height: 420px; width: 100%;"></div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script>
+        (function () {
+            var dataPoints = @Html.Raw(ViewBag.DataPoints);
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                exportEnabled: true,
+                theme: "light2",
+                title: { text: @Html.Raw(glps.Services.ChartJson.Serialize((string)ViewBag.ChartTitle)) },
+                subtitles: [{ text: @Html.Raw(glps.Services.ChartJson.Serialize((string)ViewBag.ChartSubtitle)) }],
+                axisY: { title: @Html.Raw(glps.Services.ChartJson.Serialize((string)ViewBag.AxisTitle)), minimum: 0, maximum: 100, suffix: "%" },
+                data: [{
+                    type: @Html.Raw(glps.Services.ChartJson.Serialize((string)(ViewBag.ChartType ?? "bar"))),
+                    indexLabel: "{y}%",
+                    toolTipContent: "<b>{label}</b>: {y}% ({count} " + @Html.Raw(glps.Services.ChartJson.Serialize((string)(ViewBag.CountLabel ?? "passengers"))) + ")",
+                    dataPoints: dataPoints
+                }]
+            });
+            chart.render();
+        })();
+    </script>
+}
+else
+{
+    <div class="alert alert-info">
+        No data to chart yet. Add passenger risk records (bchn_data), flight manifests (appin_data)
+        and flights (asset_details) with matching passport and flight numbers.
+        @Html.ActionLink("Upload data", "UploadData", "Home")
+    </div>
+}

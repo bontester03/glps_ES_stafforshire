@@ -1,10 +1,10 @@
 ﻿
 @{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_layout3.cshtml";
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
 }
 
-<div class="clearfix">.</div>
+<div class="clearfix"></div>
 
 <div class="container">
 
@@ -16,7 +16,7 @@
             <div class="card bg-primary text-white mb-4">
                 <div class="card-body">Upload Data</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="https://localhost:44348/Home/UploadData">Click Here</a>
+                    <a class="small text-white stretched-link" href="@Url.Action("UploadData", "Home")">Click Here</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
@@ -25,7 +25,7 @@
             <div class="card bg-warning text-white mb-4">
                 <div class="card-body">Graphical Analytics</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="https://localhost:44348/AnalyticsReport/Index">View Graph Analytics</a>
+                    <a class="small text-white stretched-link" href="@Url.Action("Index", "AnalyticsReport")">View Graph Analytics</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
@@ -34,7 +34,7 @@
             <div class="card bg-danger text-white mb-4">
                 <div class="card-body">Raise Concern</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="#">Send Message</a>
+                    <a class="small text-white stretched-link" href="@Url.Action("Contact", "Home")">Send Message</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
             <div class="card bg-success text-white mb-4">
                 <div class="card-body">Contact Support</div>
                 <div class="card-footer d-flex align-items-center justify-content-between">
-                    <a class="small text-white stretched-link" href="#">Send Email</a>
+                    <a class="small text-white stretched-link" href="@Url.Action("Contact", "Home")">Send Email</a>
                     <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                 </div>
             </div>
